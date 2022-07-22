@@ -2,7 +2,12 @@ import React from "react";
 
 class Square extends React.Component {
   render() {
-    return <button className="square">{/* TODO  */}</button>;
+    const { value, handleClick } = this.props;
+    return (
+      <button className="square" onClick={() => handleClick()}>
+        {value}
+      </button>
+    );
   }
 }
 
