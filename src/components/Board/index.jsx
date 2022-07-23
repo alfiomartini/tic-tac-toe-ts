@@ -1,5 +1,6 @@
 import React from "react";
 import Square from "../Square";
+import { calculateWinner } from "../../utils";
 
 class Board extends React.Component {
   constructor(props) {
@@ -12,6 +13,9 @@ class Board extends React.Component {
 
   handleClick(i) {
     const { squares, xIsNext } = this.state;
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
     const squaresCopy = [...squares];
     squaresCopy[i] = xIsNext ? "X" : "O";
     this.setState({ squares: squaresCopy, xIsNext: !xIsNext });
