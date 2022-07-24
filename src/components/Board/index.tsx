@@ -1,8 +1,14 @@
 import React from "react";
+import { MouseEventHandler } from "react";
 import Square from "../Square";
 
-class Board extends React.Component {
-  renderSquare(i) {
+interface Props {
+  handleClick: MouseEventHandler;
+  squares: Array<string | null>;
+}
+
+class Board extends React.Component<Props> {
+  renderSquare(i: any): JSX.Element {
     const { squares, handleClick } = this.props;
     return <Square value={squares[i]} handleClick={() => handleClick(i)} />;
   }
