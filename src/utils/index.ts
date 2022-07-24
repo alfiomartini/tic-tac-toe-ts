@@ -1,5 +1,5 @@
-export function calculateWinner(squares) {
-  const lines = [
+export function calculateWinner(squares: Array<string | null>): string | null {
+  const lines: Array<[number, number, number]> = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
