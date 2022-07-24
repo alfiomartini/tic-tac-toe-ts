@@ -1,7 +1,7 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 
 interface Props {
-  handleClick: MouseEventHandler;
+  handleClick: () => void;
   value: string | null;
 }
 

@@ -2,8 +2,17 @@ import React from "react";
 import Board from "../Board";
 import { calculateWinner } from "../../utils";
 
-class Game extends React.Component {
-  constructor(props) {
+type Squares = {
+  squares: Array<string | null>;
+};
+interface State {
+  history: Array<Squares>;
+  xIsNext: boolean;
+  stepNumber: number;
+}
+
+class Game extends React.Component<{}, State> {
+  constructor(props: any) {
     super(props);
     this.state = {
       history: [
@@ -14,9 +23,10 @@ class Game extends React.Component {
       xIsNext: true,
       stepNumber: 0,
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(i) {
+  handleClick(i: number) {
     const { xIsNext, stepNumber } = this.state;
     // this ensures if we go back in time, and make a new move from that
     // point, we throw away all the "future" history that would now be incorrect
@@ -35,7 +45,7 @@ class Game extends React.Component {
     }));
   }
 
-  jumpTo(step) {
+  jumpTo(step: number) {
     this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
   }
 
@@ -61,10 +71,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board
-            squares={current.squares}
-            handleClick={(i) => this.handleClick(i)}
-          />
+          <Board squares={current.squares} handleClick={this.handleClick} />
         </div>
         <div className="game-info">
           <div>{status}</div>
