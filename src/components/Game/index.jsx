@@ -12,11 +12,15 @@ class Game extends React.Component {
         },
       ],
       xIsNext: true,
+      stepNumber: 0,
     };
   }
 
   handleClick(i) {
-    const { history, xIsNext } = this.state;
+    const { xIsNext, stepNumber } = this.state;
+    // this ensures if we go back in time, and make a new move from that
+    // point, we throw away all the "future" history that would now be incorrect
+    const history = this.state.history.slice(0, stepNumber + 1);
     const current = history[history.length - 1];
     // create copy
     const squares = [...current.squares];
@@ -24,16 +28,30 @@ class Game extends React.Component {
       return;
     }
     squares[i] = xIsNext ? "X" : "O";
-    this.setState({
+    this.setState((prev) => ({
       history: [...history, { squares: squares }],
       xIsNext: !xIsNext,
-    });
+      stepNumber: prev.stepNumber + 1,
+    }));
+  }
+
+  jumpTo(step) {
+    this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
   }
 
   render() {
-    const { history, xIsNext } = this.state;
-    const current = history[history.length - 1];
+    const { history, xIsNext, stepNumber } = this.state;
+    const current = history[stepNumber];
     const winner = calculateWinner(current.squares);
+
+    const moves = history.map((step, index) => {
+      const action = index === 0 ? "Go to game start" : "Go to move #" + index;
+      return (
+        <li key={index}>
+          <button onClick={() => this.jumpTo(index)}>{action}</button>
+        </li>
+      );
+    });
     let status;
     if (winner) {
       status = "Winner: " + winner;
@@ -50,7 +68,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <div>{/* TODO */}</div>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
