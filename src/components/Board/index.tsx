@@ -16,13 +16,18 @@ class Board extends React.Component<Props> {
 
   renderBoardRow(i: number) {
     const squares = [0, 1, 2].map((index) => this.renderSquare(index + i));
-    return <div className="board-row">{squares}</div>;
+    return (
+      <div className="board-row" key={i}>
+        {squares}
+      </div>
+    );
   }
 
   renderBoard() {
     const board = [0, 3, 6].map((index) => this.renderBoardRow(index));
     return board;
   }
+
   render() {
     return <div>{this.renderBoard()}</div>;
   }

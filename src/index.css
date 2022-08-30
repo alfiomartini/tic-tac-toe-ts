@@ -57,3 +57,12 @@ ul {
   background-color: black;
   color: whitesmoke;
 }
+
+.sort {
+  padding: 6px 10px;
+  background-color: #303030;
+  color: whitesmoke;
+  width: 120px;
+  margin: 10px 30px;
+  border-radius: 5px;
+}

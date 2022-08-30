@@ -11,6 +11,7 @@ interface State {
   xIsNext: boolean;
   stepNumber: number;
   selected: number;
+  sortDesc: boolean;
 }
 
 class Game extends React.Component<{}, State> {
@@ -26,6 +27,7 @@ class Game extends React.Component<{}, State> {
       xIsNext: true,
       stepNumber: 0,
       selected: -1,
+      sortDesc: false,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -66,11 +68,7 @@ class Game extends React.Component<{}, State> {
     return { row, col };
   }
 
-  render() {
-    const { history, xIsNext, stepNumber, selected } = this.state;
-    const current = history[stepNumber];
-    const winner = calculateWinner(current.squares);
-
+  getMoves(history: Squares[], selected: number) {
     const moves = history.map((step, index) => {
       const { row, col } = this.getRowCol(step.currSquare);
       let action = index === 0 ? "Go to game start" : "Go to move #" + index;
@@ -87,6 +85,17 @@ class Game extends React.Component<{}, State> {
         </li>
       );
     });
+    if (this.state.sortDesc) return moves.reverse();
+    else return moves;
+  }
+
+  render() {
+    const { history, xIsNext, stepNumber, selected, sortDesc } = this.state;
+    const current = history[stepNumber];
+    const winner = calculateWinner(current.squares);
+
+    const moves = this.getMoves(history, selected);
+
     let status;
     if (winner) {
       status = "Winner: " + winner;
@@ -100,6 +109,12 @@ class Game extends React.Component<{}, State> {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button
+            className="sort"
+            onClick={() => this.setState({ sortDesc: !sortDesc })}
+          >
+            {sortDesc ? "descending" : "ascending"}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
