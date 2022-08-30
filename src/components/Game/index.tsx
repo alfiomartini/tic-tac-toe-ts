@@ -48,6 +48,7 @@ class Game extends React.Component<{}, State> {
       history: [...history, { squares: squares, currSquare: i }],
       xIsNext: !xIsNext,
       stepNumber: prev.stepNumber + 1,
+      selected: -1,
     }));
   }
 
