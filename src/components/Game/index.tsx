@@ -4,6 +4,7 @@ import { calculateWinner } from "../../utils";
 
 type Squares = {
   squares: Array<string | null>;
+  currSquare:number;
 };
 interface State {
   history: Array<Squares>;
@@ -18,6 +19,7 @@ class Game extends React.Component<{}, State> {
       history: [
         {
           squares: Array(9).fill(null),
+          currSquare:0,
         },
       ],
       xIsNext: true,
@@ -28,18 +30,20 @@ class Game extends React.Component<{}, State> {
 
   handleClick(i: number) {
     const { xIsNext, stepNumber } = this.state;
-    // this ensures if we go back in time, and make a new move from that
-    // point, we throw away all the "future" history that would now be incorrect
+    // history is always the initial array segment, [0,step + 1),  each segment 
+    // consisting of an array with 9 squares
     const history = this.state.history.slice(0, stepNumber + 1);
     const current = history[history.length - 1];
     // create copy
     const squares = [...current.squares];
+    // if there is a winning position or the selected square is already played
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+
     squares[i] = xIsNext ? "X" : "O";
     this.setState((prev) => ({
-      history: [...history, { squares: squares }],
+      history: [...history, { squares: squares, currSquare:i }],
       xIsNext: !xIsNext,
       stepNumber: prev.stepNumber + 1,
     }));
@@ -49,13 +53,22 @@ class Game extends React.Component<{}, State> {
     this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
   }
 
+  getRowCol(index:number){
+    const row = Math.floor(index/3);
+    const col = (index % 3);
+    return {row, col}
+  }
+
   render() {
-    const { history, xIsNext, stepNumber } = this.state;
+    const { history, xIsNext, stepNumber} = this.state;
     const current = history[stepNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, index) => {
-      const action = index === 0 ? "Go to game start" : "Go to move #" + index;
+      const {row,col} = this.getRowCol(step.currSquare)
+      let action = index === 0 ? "Go to game start" : "Go to move #" + index;
+      const rowCol = index > 0 ? ` : Row:${row}, Col:${col}`:'';
+      action += rowCol;
       return (
         <li key={index}>
           <button onClick={() => this.jumpTo(index)}>{action}</button>
