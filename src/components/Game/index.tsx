@@ -13,6 +13,7 @@ interface State {
   stepNumber: number;
   selected: number;
   sortDesc: boolean;
+  freeSquares: number;
 }
 
 class Game extends React.Component<{}, State> {
@@ -22,13 +23,14 @@ class Game extends React.Component<{}, State> {
       history: [
         {
           squares: Array(9).fill(null),
-          currSquare: 0,
+          currSquare: -1,
         },
       ],
       xIsNext: true,
       stepNumber: 0,
       selected: -1,
       sortDesc: false,
+      freeSquares: 9,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -52,6 +54,7 @@ class Game extends React.Component<{}, State> {
       xIsNext: !xIsNext,
       stepNumber: prev.stepNumber + 1,
       selected: -1,
+      freeSquares: prev.freeSquares - 1,
     }));
   }
 
@@ -91,7 +94,8 @@ class Game extends React.Component<{}, State> {
   }
 
   render() {
-    const { history, xIsNext, stepNumber, selected, sortDesc } = this.state;
+    const { history, xIsNext, stepNumber, selected, sortDesc, freeSquares } =
+      this.state;
     const current = history[stepNumber];
     const winnerTriple = calculateWinner(current.squares);
 
@@ -100,8 +104,10 @@ class Game extends React.Component<{}, State> {
     let status;
     if (winnerTriple) {
       status = "Winner: " + current.squares[winnerTriple[0]];
-    } else {
+    } else if (freeSquares > 0) {
       status = "Next Player: " + (xIsNext ? "X" : "O");
+    } else {
+      status = "Draw";
     }
     return (
       <div className="game">
