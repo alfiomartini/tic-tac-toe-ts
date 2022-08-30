@@ -1,4 +1,6 @@
-export function calculateWinner(squares: Array<string | null>): string | null {
+export function calculateWinner(
+  squares: Array<string | null>
+): number[] | null {
   const lines: Array<[number, number, number]> = [
     [0, 1, 2],
     [3, 4, 5],
@@ -13,7 +15,7 @@ export function calculateWinner(squares: Array<string | null>): string | null {
   for (let line of lines) {
     const [a, b, c] = line;
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return line;
     }
   }
   return null;

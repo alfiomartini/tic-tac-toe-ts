@@ -4,13 +4,23 @@ import Square from "../Square";
 interface Props {
   handleClick: (i: number) => void;
   squares: Array<string | null>;
+  winner: number[] | null;
 }
 
 class Board extends React.Component<Props> {
   renderSquare(i: number): JSX.Element {
-    const { squares, handleClick } = this.props;
+    const { squares, handleClick, winner } = this.props;
     return (
-      <Square value={squares[i]} handleClick={() => handleClick(i)} key={i} />
+      <Square
+        value={squares[i]}
+        handleClick={() => handleClick(i)}
+        key={i}
+        className={
+          winner && winner.length === 3 && winner.includes(i)
+            ? "winner-square"
+            : ""
+        }
+      />
     );
   }
 

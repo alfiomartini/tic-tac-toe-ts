@@ -2,10 +2,11 @@ import React from "react";
 import Board from "../Board";
 import { calculateWinner } from "../../utils";
 
-type Squares = {
+interface Squares {
   squares: Array<string | null>;
   currSquare: number;
-};
+}
+
 interface State {
   history: Array<Squares>;
   xIsNext: boolean;
@@ -92,20 +93,24 @@ class Game extends React.Component<{}, State> {
   render() {
     const { history, xIsNext, stepNumber, selected, sortDesc } = this.state;
     const current = history[stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winnerTriple = calculateWinner(current.squares);
 
     const moves = this.getMoves(history, selected);
 
     let status;
-    if (winner) {
-      status = "Winner: " + winner;
+    if (winnerTriple) {
+      status = "Winner: " + current.squares[winnerTriple[0]];
     } else {
       status = "Next Player: " + (xIsNext ? "X" : "O");
     }
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} handleClick={this.handleClick} />
+          <Board
+            squares={current.squares}
+            handleClick={this.handleClick}
+            winner={winnerTriple}
+          />
         </div>
         <div className="game-info">
           <div>{status}</div>

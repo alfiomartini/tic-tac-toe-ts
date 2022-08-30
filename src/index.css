@@ -66,3 +66,8 @@ ul {
   margin: 10px 30px;
   border-radius: 5px;
 }
+
+.winner-square {
+  background-color: #303030;
+  color: whitesmoke;
+}
