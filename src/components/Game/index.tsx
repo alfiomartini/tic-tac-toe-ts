@@ -4,12 +4,13 @@ import { calculateWinner } from "../../utils";
 
 type Squares = {
   squares: Array<string | null>;
-  currSquare:number;
+  currSquare: number;
 };
 interface State {
   history: Array<Squares>;
   xIsNext: boolean;
   stepNumber: number;
+  selected: number;
 }
 
 class Game extends React.Component<{}, State> {
@@ -19,18 +20,19 @@ class Game extends React.Component<{}, State> {
       history: [
         {
           squares: Array(9).fill(null),
-          currSquare:0,
+          currSquare: 0,
         },
       ],
       xIsNext: true,
       stepNumber: 0,
+      selected: -1,
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(i: number) {
     const { xIsNext, stepNumber } = this.state;
-    // history is always the initial array segment, [0,step + 1),  each segment 
+    // history is always the initial array segment, [0,step + 1),  each segment
     // consisting of an array with 9 squares
     const history = this.state.history.slice(0, stepNumber + 1);
     const current = history[history.length - 1];
@@ -43,35 +45,44 @@ class Game extends React.Component<{}, State> {
 
     squares[i] = xIsNext ? "X" : "O";
     this.setState((prev) => ({
-      history: [...history, { squares: squares, currSquare:i }],
+      history: [...history, { squares: squares, currSquare: i }],
       xIsNext: !xIsNext,
       stepNumber: prev.stepNumber + 1,
     }));
   }
 
   jumpTo(step: number) {
-    this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
+    this.setState({
+      stepNumber: step,
+      xIsNext: step % 2 === 0,
+      selected: step,
+    });
   }
 
-  getRowCol(index:number){
-    const row = Math.floor(index/3);
-    const col = (index % 3);
-    return {row, col}
+  getRowCol(index: number) {
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+    return { row, col };
   }
 
   render() {
-    const { history, xIsNext, stepNumber} = this.state;
+    const { history, xIsNext, stepNumber, selected } = this.state;
     const current = history[stepNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, index) => {
-      const {row,col} = this.getRowCol(step.currSquare)
+      const { row, col } = this.getRowCol(step.currSquare);
       let action = index === 0 ? "Go to game start" : "Go to move #" + index;
-      const rowCol = index > 0 ? ` : Row:${row}, Col:${col}`:'';
+      const rowCol = index > 0 ? ` : Row:${row}, Col:${col}` : "";
       action += rowCol;
       return (
         <li key={index}>
-          <button onClick={() => this.jumpTo(index)}>{action}</button>
+          <button
+            onClick={() => this.jumpTo(index)}
+            className={index === selected ? "selected-move" : ""}
+          >
+            {action}
+          </button>
         </li>
       );
     });
