@@ -8,7 +8,7 @@ interface Props {
 }
 
 class Board extends React.Component<Props> {
-  renderSquare(i: number): JSX.Element {
+  renderSquare(i: number) {
     const { squares, handleClick, winner } = this.props;
     return (
       <Square
